@@ -1,8 +1,9 @@
-import Navbar from "./Navbar";
+import Navbar from "../Navbar";
 import { useState } from "react";
-import { uploadFileToIPFS, uploadJSONToIPFS } from "../pinata";
+import { uploadFileToIPFS, uploadJSONToIPFS } from "../../pinata";
 
-import NFT from '../NFT.json';
+import NFT from '../../NFT.json';
+import createNft from "./createNft"; 
 
 
 export default function SellNFT() {
@@ -12,6 +13,8 @@ export default function SellNFT() {
     const [fileURL, setFileURL] = useState(null);
     const ethers = require("ethers");
     const [message, updateMessage] = useState('');
+    const [getImage, setImage] = useState('');
+
 
     async function disableButton() {
         const listButton = document.getElementById("list-button")
@@ -30,6 +33,7 @@ export default function SellNFT() {
     async function OnChangeFile(e) {
 
         var file = e.target.files[0];
+        setImage(file);
         try {
             //upload the file to IPFS
             disableButton();
@@ -80,6 +84,7 @@ export default function SellNFT() {
 
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
+            const addr = await signer.getAddress();
             disableButton();
             updateMessage("Uploading NFT(takes 5 mins).. please dont click anything!")
 
@@ -88,6 +93,8 @@ export default function SellNFT() {
             const tx = await transaction.wait();
             const event = tx.events[0];
             const tokenId = event.args[2];
+            
+            createNft(formParams,tokenId, fileURL,addr)
 
             alert("Successfully Minted your NFT!");
 

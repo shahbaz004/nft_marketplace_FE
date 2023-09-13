@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ethers } from 'ethers';
-import NFT from '../NFT.json';
-import Navbar from './Navbar';
-import SoldNFT from './SoldNft';
-import SolarSystem from './SolarSystem';
+import NFT from '../../NFT.json';
+import Navbar from '../Navbar';
+import SoldNFT from '../SoldNft';
+import SolarSystem from '../SolarSystem';
 
 export default function Profile() {
   const [sold, setSold] = useState([]);

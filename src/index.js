@@ -7,17 +7,17 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import SellNFT from './components/SellNFT';
-import Marketplace from './components/Marketplace';
-import Profile from './components/Profile';
-import NFTPage from './components/NFTpage';
-import SellPage from './components/Sellpage';
-import SoldData from './components/SoldData';
-import SoldPage from './components/SoldPage';
+import SellNFT from './components/createNft/SellNFT';
+import Marketplace from './components/marketplace/Marketplace';
+import Profile from './components/profile/Profile';
+import NFTPage from './components/nftDetail/NFTpage';
+import SellPage from './components/buyNft/Sellpage';
+import SoldData from './components/soldNft/SoldData';
+import SoldPage from './components/soldNft/SoldPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  <React.Fragment>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Marketplace />}/>
@@ -29,7 +29,7 @@ root.render(
         <Route path="/soldData" element={<SoldData/>}/> 
       </Routes>
     </BrowserRouter>
-  </React.StrictMode>
+  </React.Fragment>
 );
 
 reportWebVitals();

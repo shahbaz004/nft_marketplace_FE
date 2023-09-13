@@ -1,9 +1,9 @@
 import { useParams } from 'react-router-dom';
-import NFT from "../NFT.json";
+import NFT from "../../NFT.json";
 import axios from "axios";
 import { useState } from "react";
-import { GetIpfsUrlFromPinata } from "../utils";
-import Navbar from './Navbar';
+import { GetIpfsUrlFromPinata } from "../../utils";
+import Navbar from '../Navbar';
 
 export default function NFTPage(props) {
 
@@ -23,7 +23,6 @@ export default function NFTPage(props) {
         const ethers = require("ethers");
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
-        const addr = await signer.getAddress();
         let contract = new ethers.Contract(NFT.address, NFT.abi, signer)
         var tokenURI = await contract.tokenURI(tokenId);
         const info = await contract.getTokenDetails(tokenId);
@@ -47,9 +46,12 @@ export default function NFTPage(props) {
     }
     async function sellNFT(tokenId) {
         try {
+            let url = 'http://127.0.0.1:8001/api/list-nft/'
             const ethers = require("ethers");
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
+            const addr = await signer.getAddress();
+
 
             let contract = new ethers.Contract(NFT.address, NFT.abi, signer);
 
@@ -57,6 +59,12 @@ export default function NFTPage(props) {
             updateMessage("Listing the NFT... Please Wait (Upto 5 mins)")
             let transaction = await contract.listToken(tokenId, salePrice);
             await transaction.wait();
+            let payload = {
+                "token_id": tokenId,
+                "price": formParams.price,
+                "seller": addr,
+            }
+            axios.post(url,payload)
             alert('You successfully List the NFT!');
             updateMessage("");
             window.location.replace("/")

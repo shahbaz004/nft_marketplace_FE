@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "./Navbar";
-import SellTile from "./SellTile";
-import NFT from "../NFT.json";
+import Navbar from "../Navbar";
+import SellTile from "../SellTile";
+import NFT from "../../NFT.json";
 import axios from "axios";
-import SolarSystem from "./SolarSystem";
+import SolarSystem from "../SolarSystem";
+import { AssistWalker } from "@mui/icons-material";
 
 export default function Marketplace() {
   const [data, setData] = useState([]);
@@ -19,32 +20,29 @@ export default function Marketplace() {
         const accounts = await window.ethereum.request({
           method: "eth_requestAccounts",
         });
+
+        const url = 'http://127.0.0.1:8001/api/user-profile/'
+        const payload = {
+          wallet_address: accounts[0]
+        }
+        axios.post(url, payload)
+        
         const ethers = require("ethers");
 
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const marketplaceUrl = 'http://127.0.0.1:8001/api/marketplace/'
+        let response = await axios.get(marketplaceUrl)
+        console.log("========res===========",response.data);
 
-        const signer = provider.getSigner();
 
-        const contract = new ethers.Contract(NFT.address, NFT.abi, signer);
-        const tokenIds = await contract.getAvailableNFTs();
-
-        const items = await Promise.all(
-          tokenIds.map(async (tokenId) => {
-            const tokenURI = await contract.tokenURI(tokenId);
-            const { data: meta } = await axios.get(tokenURI);
-            const { price } = await contract.getTokenDetails(tokenId);
-            const formattedPrice = ethers.utils.formatEther(price);
-
-            return {
-              tokenId: tokenId.toNumber(),
-              image: meta.image,
-              name: meta.name,
-              description: meta.description,
-              price: formattedPrice,
-            };
-          })
-        );
-
+        const items = response.data.map(item => ({
+          image: item.image,
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          tokenId: item.token_id,
+          status: item.is_active
+        }));
+        console.log("=============items==========",items);
         setData(items);
         setDataFetched(true);
       } catch (error) {

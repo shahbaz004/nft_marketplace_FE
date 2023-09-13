@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Icon } from '@mui/material';
 import WalletIcon from '@mui/icons-material/Wallet';
-
+import axios from "axios";
 
 function Navbar() {
   const [connected, toggleConnect] = useState(false);
@@ -46,10 +46,15 @@ function Navbar() {
   async function connectWebsite() {
     try {
       await window.ethereum.request({ method: 'eth_requestAccounts' })
-        .then(() => {
+        .then((accounts) => {
           updateButton();
           getAddress();
           window.location.replace(location.pathname)
+          const url = 'http://127.0.0.1:8001/api/user-profile/'
+          const payload = {
+            wallet_address: accounts[0]
+          }
+          axios.post(url, payload)
         });
     } catch (error) {
       console.log("Error in connectWebsite:", error);

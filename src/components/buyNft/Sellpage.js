@@ -1,9 +1,9 @@
-import Navbar from "./Navbar";
+import Navbar from "../Navbar";
 import { useParams } from 'react-router-dom';
-import MarketplaceJSON from "../NFT.json";
+import MarketplaceJSON from "../../NFT.json";
 import axios from "axios";
 import { useState } from "react";
-import { GetIpfsUrlFromPinata } from "../utils";
+import { GetIpfsUrlFromPinata } from "../../utils";
 
 
 export default function SellPage(props) {
@@ -19,7 +19,7 @@ export default function SellPage(props) {
         const addr = await signer.getAddress();
         let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer)
         var tokenURI = await contract.tokenURI(tokenId);
-        const listedToken = await contract.getTokenCreatorById(tokenId);
+        // const listedToken = await contract.getTokenCreatorById(tokenId);
         tokenURI = GetIpfsUrlFromPinata(tokenURI);
         let meta = await axios.get(tokenURI);
         const price = await contract.getTokenDetails(tokenId).then((details) => details.price);
@@ -56,6 +56,7 @@ export default function SellPage(props) {
     }
     async function cancel(tokenId) {
         try {
+            let url = `http://127.0.0.1:8001/api/cancel-listed-nft/`
             const ethers = require("ethers");
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
@@ -64,9 +65,10 @@ export default function SellPage(props) {
             updateMessage("Cancel the NFT... Please Wait (Upto 5 mins)")
             let transaction = await contract.unlistToken(tokenId);
             await transaction.wait();
+            await axios.post(url, {token_id:tokenId})
             alert('You successfully Cancel the NFT!');
             updateMessage("");
-            window.location.replace("/ma")
+            window.location.replace("/")
         }
         catch (e) {
             alert("Upload Error" + e)

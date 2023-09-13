@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { useParams } from 'react-router-dom';
-import MarketplaceJSON from '../NFT.json';
-import Navbar from './Navbar';
-import { GetIpfsUrlFromPinata } from '../utils';
+import MarketplaceJSON from '../../NFT.json';
+import Navbar from '../Navbar';
+import { GetIpfsUrlFromPinata } from '../../utils';
 
 export default function SoldPage() {
   const [data, setData] = useState({});

@@ -15,13 +15,22 @@ export default function Profile() {
   console.log("========datass=======",data);
 
   const fetchData = async()=> {
-    console.log("fetchData function called");
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    console.log("=========accounts==========",accounts);
+
+    console.log("fetchData function called",accounts[0]);
 
     const url = 'http://127.0.0.1:8001/api/nfts/'
+    let response = await fetch(url, { 
+      method: 'get', 
+      headers: {
+        "Content-Type": "application/json",
+        "walletAddress": accounts[0]
+         }
+    });
 
-    let response = await axios.get(url)
-    const data = response.data
-    console.log("=======result=========",response.data);
+    const data = await response.json()
+    console.log("=======result=========",data);
     const items = data.map((nft) => {
       return {
         tokenId: nft.token_id,

@@ -88,12 +88,12 @@ export default function SellNFT() {
             disableButton();
             updateMessage("Uploading NFT(takes 5 mins).. please dont click anything!")
 
-            let Nftcontract = new ethers.Contract(NFT.address, NFT.abi, signer)
-            let transaction = await Nftcontract.mintToken(metadataURL)
-            const tx = await transaction.wait();
-            const event = tx.events[0];
-            const tokenId = event.args[2];
-            
+            // let Nftcontract = new ethers.Contract(NFT.address, NFT.abi, signer)
+            // let transaction = await Nftcontract.mintToken(metadataURL)
+            // const tx = await transaction.wait();
+            // const event = tx.events[0];
+            // const tokenId = event.args[2];
+            let tokenId = 22;
             createNft(formParams,tokenId, fileURL,addr)
 
             alert("Successfully Minted your NFT!");

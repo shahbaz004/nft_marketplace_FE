@@ -20,26 +20,20 @@ export default function NFTPage(props) {
     })
 
     async function getNFTData(tokenId) {
-        const ethers = require("ethers");
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        let contract = new ethers.Contract(NFT.address, NFT.abi, signer)
-        var tokenURI = await contract.tokenURI(tokenId);
-        const info = await contract.getTokenDetails(tokenId);
-        setListed(info.listed);
-
-        tokenURI = GetIpfsUrlFromPinata(tokenURI);
-        let meta = await axios.get(tokenURI);
-        meta = meta.data;
+        let url = `http://127.0.0.1:8001/api/nfts/?token_id=${tokenId}`
+        
+        const res = await axios.get(url)
+        let response = res.data[0]
+        console.log("=======respone==========",response);
 
         let item = {
 
-            tokenId: tokenId,
-            owner: info.owner,
-            image: meta.image,
-            name: meta.name,
-            description: meta.description,
-            creator: info.creator
+            tokenId: response.token_id,
+            owner: response.owner_name,
+            image: response.image_url,
+            name: response.name,
+            description: response.description,
+            // creator: info.creator
         }
         updateData(item);
         updateDataFetched(true);
